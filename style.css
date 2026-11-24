@@ -1,6 +1,29 @@
 body {
   font-family: sans-serif;
   margin: 2rem;
+  color: #1f2328;
+  background: #fff;
+  line-height: 1.5;
+}
+
+main {
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+a {
+  color: #0969da;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.15em;
+}
+
+a:hover {
+  text-decoration-thickness: 0.12em;
+}
+
+a:focus-visible {
+  outline: 3px solid #0969da;
+  outline-offset: 3px;
 }
 
 ul {
@@ -11,4 +34,32 @@ ul {
 li {
   padding: 0.5rem 0;
   border-bottom: 1px solid #ddd;
+  overflow-wrap: anywhere;
+}
+
+#status {
+  margin-block: 1.5rem 0.75rem;
+  min-height: 1.5em;
+  color: #57606a;
+}
+
+#status[data-type="error"] {
+  color: #b42318;
+  font-weight: 700;
+}
+
+#status[data-type="empty"] {
+  font-weight: 700;
+}
+
+@media (max-width: 36rem) {
+  body {
+    margin: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a {
+    transition: text-decoration-thickness 120ms ease;
+  }
 }
