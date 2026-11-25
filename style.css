@@ -107,19 +107,13 @@ li:last-child {
   border-bottom: 0;
 }
 
-li > span {
-  text-align: right;
-  white-space: nowrap;
-}
+
 
 li:hover {
   background: var(--surface-hover);
 }
 
-li time {
-  color: var(--muted);
-  font-size: 0.875rem;
-}
+
 
 #status {
   margin-block: 1.5rem 0.75rem;

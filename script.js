@@ -60,22 +60,14 @@ async function loadEvents() {
     validEvents.forEach((event) => {
       const item = document.createElement("li");
       const link = document.createElement("a");
-      const time = document.createElement("time");
-      const details = document.createElement("span");
-      details.append(" — starred ", time);
+      
 
       link.href = `https://github.com/${event.name}`;
       link.textContent = event.name;
 
-      time.dateTime = event.starred;
-      time.textContent = new Intl.DateTimeFormat(undefined, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        timeZone: "UTC",
-      }).format(new Date(`${event.starred}T00:00:00Z`));
+      
 
-      item.append(link, details);
+      item.append(link);
       list.appendChild(item);
     });
 
