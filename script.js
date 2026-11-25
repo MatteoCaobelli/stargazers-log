@@ -30,7 +30,7 @@ async function loadEvents() {
   }
 
   try {
-    const response = await fetch("events.json");
+    const response = await fetch("events.json", { cache: "no-cache" });
 
     if (!response.ok) {
       throw new Error(`Could not load starred repositories (HTTP ${response.status}).`);

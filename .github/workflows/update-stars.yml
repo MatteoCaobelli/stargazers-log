@@ -1,0 +1,83 @@
+name: Update starred repositories
+
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-stars:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Refresh events.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_OWNER: ${{ github.repository_owner }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
+          from pathlib import Path
+
+          token = os.environ["GITHUB_TOKEN"]
+          owner = os.environ["REPO_OWNER"]
+          events = []
+          page = 1
+
+          while True:
+              url = (
+                  f"https://api.github.com/users/{owner}/starred"
+                  f"?per_page=100&page={page}&sort=created&direction=desc"
+              )
+              request = urllib.request.Request(
+                  url,
+                  headers={
+                      "Accept": "application/vnd.github.star+json",
+                      "Authorization": f"Bearer {token}",
+                      "User-Agent": owner,
+                      "X-GitHub-Api-Version": "2022-11-28",
+                  },
+              )
+
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  starred_repos = json.load(response)
+
+              if not isinstance(starred_repos, list):
+                  raise RuntimeError("GitHub returned an unexpected response.")
+
+              for item in starred_repos:
+                  repo = item["repo"]
+                  if not repo.get("private", False):
+                      events.append({
+                          "name": repo["full_name"],
+                          "starred": item["starred_at"][:10],
+                      })
+
+              if len(starred_repos) < 100:
+                  break
+              page += 1
+
+          Path("events.json").write_text(
+              json.dumps(events, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Commit updated list
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add events.json
+          if git diff --cached --quiet; then
+            echo "No changes to events.json"
+          else
+            git commit -m "Update starred repositories"
+            git push
+          fi
