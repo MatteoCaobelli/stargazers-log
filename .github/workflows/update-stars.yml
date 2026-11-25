@@ -79,5 +79,6 @@ jobs:
             echo "No changes to events.json"
           else
             git commit -m "Update starred repositories"
+            git pull --rebase --autostash origin main
             git push
           fi
