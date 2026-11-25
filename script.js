@@ -60,8 +60,9 @@ async function loadEvents() {
     validEvents.forEach((event) => {
       const item = document.createElement("li");
       const link = document.createElement("a");
-      const separator = document.createTextNode(" — starred ");
       const time = document.createElement("time");
+      const details = document.createElement("span");
+      details.append(" — starred ", time);
 
       link.href = `https://github.com/${event.name}`;
       link.textContent = event.name;
@@ -74,7 +75,7 @@ async function loadEvents() {
         timeZone: "UTC",
       }).format(new Date(`${event.starred}T00:00:00Z`));
 
-      item.append(link, separator, time);
+      item.append(link, details);
       list.appendChild(item);
     });
 
